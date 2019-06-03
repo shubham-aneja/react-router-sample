@@ -16,6 +16,13 @@ class Autosuggest extends React.Component {
 }
 
 class PDP extends React.Component {
+
+    constructor(props) {
+        super(props);
+        console.log('PDP constructor called');
+    }
+
+
     render() {
         const { match } = this.props;
         return (<div>
@@ -29,6 +36,11 @@ class PDP extends React.Component {
 
 
 class Listing extends React.Component {
+    constructor(props) {
+        super(props);
+        console.log('Listing constructor called');
+    }
+
     render() {
         const { match } = this.props;
         return (<div>
@@ -44,10 +56,11 @@ class Listing extends React.Component {
 class Home extends React.Component {
     constructor(props) {
         super(props);
-        console.log('Home constructor called')
+        console.log('Home constructor called');
     }
     render() {
         const { match } = this.props;
+        console.log('Home render called');
         return (<div>
             <AutosuggestRouteElm isHomePage={true} match={match} />
             <h2>Home  class</h2>
@@ -60,6 +73,7 @@ class AutosuggestRouteElm extends Component {
 
     constructor(props) {
         super(props);
+        console.log('Autosuggest constructor called');
         this.popStateHandler = this.popStateHandler.bind(this);
     }
 
@@ -84,7 +98,6 @@ class AutosuggestRouteElm extends Component {
         const { match, isHomePage } = this.props;
         const url = isHomePage ? '/autosuggest' : match.url + '/autosuggest'
         const isAutoSuggestPage = window.location.pathname.indexOf('/autosuggest') !== -1
-        console.log('push is false')
         return (
             <div>
                 <Route
@@ -97,29 +110,6 @@ class AutosuggestRouteElm extends Component {
     }
 
 }
-
-const routes = [
-    // {
-    //     path: /\/|\/autosuggest/,
-    //     exact: true,
-    //     main: Home
-    // },
-    // {
-    //     path: "/autosuggest",
-    //     exact: true,
-    //     main: Home
-    // },
-    {
-        path: "/pdp",
-        main: PDP
-    },
-    {
-        path: "/listing",
-        main: Listing
-    }
-];
-
-
 
 
 class RouteExample extends Component {
@@ -149,6 +139,9 @@ class RouteExample extends Component {
                             <li>
                                 <Link to="/listing">Listing</Link>
                             </li>
+                            <li>
+                                <Link to="/404">Non existing page</Link>
+                            </li>
                         </ul>
                     </div>
 
@@ -165,9 +158,18 @@ class RouteExample extends Component {
                                 component={Listing}
                             />
                             <Route
-                                path={'/'}
-                                // exact={true}
-                                component={AHome}
+                                path={`/autosuggest/`}
+                                exact={true}
+                                render={() => (<Home {...this.props}></Home>)}
+                            />
+                            <Route
+                                path={`/`}
+                                exact={true}
+                                render={() => (<Home {...this.props}></Home>)}
+                            />
+                            <Route
+                                path={`*`}
+                                render={() => (<div>Nothing matched...</div>)}
                             />
                         </Switch>
                     </div>
