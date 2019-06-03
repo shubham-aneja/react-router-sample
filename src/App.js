@@ -160,12 +160,12 @@ class RouteExample extends Component {
                             <Route
                                 path={`/autosuggest/`}
                                 exact={true}
-                                render={() => (<Home {...this.props}></Home>)}
+                                component={AHome}
                             />
                             <Route
                                 path={`/`}
                                 exact={true}
-                                render={() => (<Home {...this.props}></Home>)}
+                                component={AHome}
                             />
                             <Route
                                 path={`*`}
@@ -179,10 +179,18 @@ class RouteExample extends Component {
     }
 }
 
+// const BHome = (props)=>(<Home {...props}></Home>)
 class AHome extends Component {
     render() {
-        return (<Home key='1' {...this.props}></Home>)
+        return (<Home {...this.props}></Home>)
     }
 }
+
+
+// class CHome extends Component {
+//     render() {
+//         return (<Home {...this.props}></Home>)
+//     }
+// }
 
 export default RouteExample;
