@@ -19,14 +19,36 @@ class PDP extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log('PDP constructor called');
+        console.log('PDP constructor called', props.history);
+        // window.abc = props.history
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.location.hash == nextProps.location.hash) {
+            /* Not a case of hash, so update is requried */
+            console.log('PDP CHECKING: Updation required')
+        } else {
+            console.log('PDP CHECKING: Updation NOT required')
+        }
+        // console.log(`PDP willReceiveProps called [Previous: ${this.props.location.hash}] Updated: ${nextProps.location.hash}`);
+    }
 
     render() {
         const { match } = this.props;
+        console.log('PDP render called', this.props.history);
         return (<div>
             <AutosuggestRouteElm match={match} />
+            <div onClick={() => this.props.history.replace('/listing')} >replace from here</div>
+            <div onClick={
+                () => {
+                    let hashIndex = window.location.pathname.indexOf('#');
+                    let url = hashIndex == -1 ? window.location.pathname : window.location.pathname.substring(0,window.location.pathname.indexOf('#'));
+                    if(url[url.length-1] !== '/') {
+                        url = `${url}/`
+                    }
+                    this.props.history.push({  pathname: url,hash: '#name' });
+                }
+            } >GO to query params from function..</div>
             <h2>PDP  class</h2>
         </div>)
     }
@@ -88,6 +110,7 @@ class AutosuggestRouteElm extends Component {
     }
 
     popStateHandler(e) {
+        console.log('this.props.location, window.location', this.props.location, window.location)
         if (window.location.pathname === '/autosuggest') {
             // window.history.back();
             console.log('Going forward to /autosuggest');
@@ -118,6 +141,12 @@ class RouteExample extends Component {
 
     }
 
+    componentDidMount() {
+        window.addEventListener('popstate', (event) => {
+            console.log('popped state', event)
+        });
+    }
+
     render() {
         return (
             <Router>
@@ -140,12 +169,26 @@ class RouteExample extends Component {
                                 <Link to="/listing">Listing</Link>
                             </li>
                             <li>
+                                <Link to="/addressList">Address List</Link>
+                            </li>
+                            <li>
                                 <Link to="/404">Non existing page</Link>
+                            </li>
+                            <li>
+                                <Link to={{ pathname: window.location.href.substring(0,window.location.href.indexOf('#')), hash: '#name' }}>Query params..</Link>
                             </li>
                         </ul>
                     </div>
 
                     <div style={{ flex: 1, padding: "10px" }}>
+                        <Route
+                            path={'*'}
+                            // exact={true}
+                            render={() => {
+                                console.log('react router updatingggg')
+                                return null
+                            }}
+                        />
                         <Switch>
                             <Route
                                 path={'/pdp'}
@@ -157,6 +200,27 @@ class RouteExample extends Component {
                                 // exact={true}
                                 component={Listing}
                             />
+
+                            <Route
+                                path={`/addressList/`}
+                                exact={true}
+                                component={AddressList}
+                            />
+
+                            <Route
+                                path={`/checkout/`}
+                                exact={true}
+                                component={Checkout}
+                            />
+
+                            <Route
+                                path={`/addNewAddress/`}
+                                exact={true}
+                                component={AddAddress}
+                            />
+
+
+
                             <Route
                                 path={`/autosuggest/`}
                                 exact={true}
@@ -167,6 +231,7 @@ class RouteExample extends Component {
                                 exact={true}
                                 component={AHome}
                             />
+
                             <Route
                                 path={`*`}
                                 render={() => (<div>Nothing matched...</div>)}
@@ -185,6 +250,39 @@ class AHome extends Component {
         return (<Home {...this.props}></Home>)
     }
 }
+
+class Checkout extends Component {
+    render() {
+        return (
+            <div>Checkout </div>
+        )
+    }
+}
+
+class AddressList extends Component {
+    render() {
+        return (
+            <div>
+                <div>Address List</div>
+                <div onClick={() => { this.props.history.push('/checkout') }}><div >Go to Checkout.. >> </div></div>
+                <div onClick={() => { this.props.history.push('/addNewAddress') }}><div >Go to Add new address.. >> </div></div>
+            </div>
+        )
+    }
+}
+
+class AddAddress extends Component {
+    render() {
+        return (
+            <div>
+                <div>Add address</div>
+                <div onClick={() => { this.props.history.push('/checkout') }}><div >Go to Checkout.. >> </div></div>
+
+            </div>
+        )
+    }
+}
+
 
 
 // class CHome extends Component {
